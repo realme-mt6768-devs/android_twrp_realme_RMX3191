@@ -16,10 +16,6 @@
 #
 LOCAL_PATH := device/realme/RMX3191
 
-PRODUCT_RELEASE_NAME := RMX3191
-
-# Extra VNDK Versions
-PRODUCT_EXTRA_VNDK_VERSIONS := 30
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
@@ -28,6 +24,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/twrp/config/common.mk)
 
+PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/recovery/root,recovery/root)
 
 PRODUCT_DEVICE := RMX3191
 PRODUCT_NAME := twrp_RMX3191
@@ -38,11 +35,11 @@ PRODUCT_MANUFACTURER := realme
 # Dynamic
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
-# fastbootd
+# Fastbootd
 PRODUCT_PACKAGES += \
     android.hardware.fastboot@1.0-impl-mock \
-    fastbootd
+    android.hardware.fastboot@1.0-impl-mock.recovery
 
-PRODUCT_SYSTEM_PROPERTY_BLACKLIST := \
-    ro.product.device \
-    ro.product.name
+# HACK: Set vendor patch level
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vendor.build.security_patch=2099-12-31
